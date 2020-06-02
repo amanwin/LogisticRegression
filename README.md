@@ -39,11 +39,11 @@ In the last section, you saw what a binary classification problem is, and then y
 
 Since the **sigmoid curve** has all the properties you would want — extremely low values in the start, extremely high values in the end, and intermediate values in the middle — it’s a good choice for modelling the value of the **probability of diabetes.**
 
-![title](image/sigmoid-curve.jpg)
+![title](image/sigmoid-curve.JPG)
 
 This is the sigmoid curve equation:
 
-![title](sigmoid-curve-equation)
+![title](image/sigmoid-curve-equation.JPG)
 
 So now we have verified, with actual values, that the sigmoid curve actually has the properties we discussed earlier, i.e. extremely low values in the start, extremely high values in the end, and intermediate values in the middle.
 
