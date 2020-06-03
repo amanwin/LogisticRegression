@@ -69,6 +69,7 @@ So, the best fitting combination of β0 and β1 will be the one which maximises 
 In the previous lecture, you understood what a likelihood function is. To recap, the likelihood function for our data is **(1-P1)(1-P2)(1-P3)(1-P4)(1-P6)(P5)(P7)(P8)(P9)(P10) .** The best fitting sigmoid curve would be the one which maximises the value of this product.
 
 If you had to find β0 and β1 for the best fitting sigmoid curve, you would have to try a lot of combinations, unless you arrive at the one which maximises the likelihood. This is similar to linear regression, where you vary β0 and β1 until you find the combination that minimises the cost function. 
+This process, where you vary the betas until you find the best fit curve for the probability of diabetes, is called **logistic regression.**
 
 ## Odds and Log Odds
 In the previous segment, you saw that by trying different values of β0 and β1 , you can manipulate the shape of the sigmoid curve. At some combination of β0 and β1, the 'likelihood' will be maximised.
@@ -87,3 +88,42 @@ The summary of the model is given below:
 ![title](image/summary.png)
 
 In the summary shown above, 'const' corresponds to β0 and Blood Sugar Level, i.e. 'x1' corresponds to β1. So, β0 = -13.5 and β1 = 0.06.
+
+### Odds and Log Odds
+So far, you’ve seen this equation for logistic regression:
+
+![title](image/formula.JPG)
+
+Recall that this equation gives the relationship between P, the probability of diabetes and x, the patient’s blood sugar level.
+
+While the equation is correct, it is not very intuitive. In other words, the relationship between P and x is so complex that it is difficult to understand what kind of trend exists between the two. If you increase x by regular intervals of, say, 11.5, how will that affect the probability? Will it also increase by some regular interval? If not, what will happen?
+
+So, clearly, the relationship between P and x is too complex to see any apparent trends. However, if you convert the equation to a slightly different form, you can achieve a much more intuitive relationship. 
+
+[Note: By default, for this course, if the base of the logarithm is not specified, take it as e. So, log(x) = loge(x)]
+
+![title](image/sigmoid-solving.JPG)
+
+![title](image/sigmoid-interpretation.JPG)
+
+So, now, instead of probability, you have odds and log odds. Clearly, the relationship between them and x is much more intuitive and easy to understand.
+
+![title](image/odds-probablity.JPG)
+
+![title](image/rel-odds-probablity)
+
+![title](image/plot-odds-probablity.JPG)
+
+![title](image/rel-odds.JPG)
+
+![title](image/x-odds.JPG)
+
+So, the relationship between x and probability is not intuitive, while that between x and **odds/log odds** is. This has important implications. Suppose you are discussing sugar levels and the probability they correspond to. While talking about 4 patients with sugar levels of 180, 200, 220 and 240, you will not be able to intuitively understand the relationship between their probabilities (10%, 28%, 58%, 83%). However, if you are talking about the log odds of these 4 patients, you know that their log odds are in a **linearly increasing pattern** (-2.18, -0.92, 0.34, 1.60) and that the odds are in a **multiplicatively increasing pattern** (0.11, 0.40, 1.40, 4.95, increasing by a factor of 3.55).
+
+Hence, many times, it makes more sense to present a logistic regression model’s results in terms of log odds or odds than to talk in terms of probability. This happens especially a lot in industries like finance, banking, etc.
+
+That's the end of this session on univariate logistic regression. You studied logistic regression, specifically, the sigmoid function, which has this equation:
+
+![title](image/formula.JPG)
+
+However, this is not the only form of equation for logistic regression. There is also the probit form and cloglog form of logistic regression.
