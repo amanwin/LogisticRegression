@@ -52,3 +52,38 @@ However, you may be wondering — why can’t you just fit a straight line here?
 ![title](image/diabetes.png)
 
 The main problem with a straight line is that it is not steep enough. In the sigmoid curve, as you can see, you have low values for a lot of points, then the values rise all of a sudden, after which you have a lot of high values. In a straight line though, the values rise from low to high very uniformly, and hence, the “boundary” region, the one where the probabilities transition from high to low is not present.
+
+## Finding the Best Fit Sigmoid Curve - I
+
+So, in the previous lecture, you saw what a sigmoid function is and why it is a good choice for modelling the probability of a class. Now, in this section, you will learn how you can find the best fit sigmoid curve. In other words, you will learn how to find the combination of β0 and β1 which fits the data best.
+
+By varying the values of β0 and β1, we get different sigmoid curves. Now, based on some function that you have to minimise or maximise, you will get the best fit sigmoid curve.
+
+![title](image/sigmoid-curve-best-fit.JPG)
+
+So, the best fitting combination of β0 and β1 will be the one which maximises the product:
+
+![title](image/likelihood-function.JPG)
+
+## Finding the Best Fit Sigmoid Curve - II
+In the previous lecture, you understood what a likelihood function is. To recap, the likelihood function for our data is **(1-P1)(1-P2)(1-P3)(1-P4)(1-P6)(P5)(P7)(P8)(P9)(P10) .** The best fitting sigmoid curve would be the one which maximises the value of this product.
+
+If you had to find β0 and β1 for the best fitting sigmoid curve, you would have to try a lot of combinations, unless you arrive at the one which maximises the likelihood. This is similar to linear regression, where you vary β0 and β1 until you find the combination that minimises the cost function. 
+
+## Odds and Log Odds
+In the previous segment, you saw that by trying different values of β0 and β1 , you can manipulate the shape of the sigmoid curve. At some combination of β0 and β1, the 'likelihood' will be maximised.
+
+###  Logistic Regression in Python
+Let's now look at how logistic regression is implemented in python.In python, logistic regression can be implemented using libraries such as SKLearn and statsmodels, though looking at the coefficients and the model summary is easier using statsmodels. 
+
+You can find the optimum values of β0 and β1 using the python code given below. Please download and run the code and observe the values of the coefficients.
+
+Please note that you will study a detailed Python code for logistic regression in the next module. This Python code has been run so as to find the optimum values of β0 and β1 so that we can first proceed with the very important concept of **Odds and Log Odds**.
+
+[Finding Optimum Betas using Python](dataset/Betas+for+Logistic+Regression.ipynb)
+
+The summary of the model is given below:
+
+![title](image/summary.png)
+
+In the summary shown above, 'const' corresponds to β0 and Blood Sugar Level, i.e. 'x1' corresponds to β1. So, β0 = -13.5 and β1 = 0.06.
