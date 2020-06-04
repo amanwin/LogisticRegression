@@ -127,3 +127,64 @@ That's the end of this session on univariate logistic regression. You studied lo
 ![title](image/formula.JPG)
 
 However, this is not the only form of equation for logistic regression. There is also the probit form and cloglog form of logistic regression.
+
+## Multivariate Logistic Regression - Model Building
+
+### Introduction
+Just like when you’re building a model using linear regression, one independent variable might not be enough to capture all the uncertainties of the target variable in logistic regression as well. So in order to make good and accurate predictions, you need multiple variables and that is what we’ll study in this session.
+
+Before starting with multivariate logistic regression, the first question that arises is, “Do you need any extensions while moving from univariate to multivariate logistic regression?” Recall the equation used in the case of univariate logistic regression was:
+
+![title](image/formula.JPG)
+
+The above equation has only one feature variable X, for which the coefficient is β1. Now, if you have multiple features, say n, you can simply extend this equation with ‘n’ feature variables and ‘n’ corresponding coefficients such that the equation now becomes:
+
+![title](image/formula1.JPG)
+
+Recall this extension is similar to what you did while moving from simple to multiple linear regression.
+
+## Multivariate Logistic Regression - Telecom Churn Example
+Let's now look at the process of building a logistic regression model in Python.
+
+You will be looking at the telecom churn prediction example. You will use 21 variables related to customer behaviour (such as the monthly bill, internet usage etc.) to predict whether a particular customer will switch to another telecom provider or not (i.e. churn or not).
+
+#### Problem Statment
+You have a telecom firm which has collected data of all its customers. The main types of attributes are:
+* Demographics (age, gender etc.)
+* Services availed (internet packs purchased, special offers taken etc.)
+* Expenses (amount of recharge done per month etc.)
+
+Based on all this past information, you want to build a model which will predict whether a particular customer will churn or not, i.e. whether they will switch to a different service provider or not. So the variable of interest, i.e. the target variable here is ‘Churn’ which will tell us whether or not a particular customer has churned. It is a binary variable - 1 means that the customer has churned and 0 means the customer has not churned.
+
+You can download the datasets here:
+
+[Churn Data](dataset/churn_data.csv)
+
+[Internet Data](dataset/internet_data.csv)
+
+[Customer Data](dataset/customer_data.csv)
+
+Also, here’s the data dictionary:
+
+[Telecom Churn Data Dictionary](dataset/TelecomChurnDataDictionary.csv)
+
+You can also download the code file and may follow along. 
+
+[Logistic Regression Telecom Churn Case Study](Logistic+Regression+-+Telecom+Churn+Case+Study.ipynb)
+
+So, here’s what the data frame churn_data looks like:
+
+![title](image/churn_data.JPG)
+
+Also, here’s the data frame customer_data:
+
+![title](image/customer_data.JPG)
+
+Lastly, here’s the data frame internet_data:
+
+![title](image/internet_data.JPG)
+
+Now, as you can clearly see, the first 5 customer IDs are exactly the same for each of these data frames. Hence, using the column customer ID, you can collate or merge the data into a single data frame. We'll start with that in the next segment.
+
+## Data Cleaning and Preparation - I
+Before you jump into the actual model building, you first need to clean and prepare your data. As you might have seen in the last segment, all the useful information is present in three dataframes with ‘Customer ID’ being the common column. So as the first step, you need to merge these three data files so that you have all the useful data combined into a single master dataframe. 
