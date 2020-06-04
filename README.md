@@ -170,7 +170,7 @@ Also, here’s the data dictionary:
 
 You can also download the code file and may follow along. 
 
-[Logistic Regression Telecom Churn Case Study](Logistic+Regression+-+Telecom+Churn+Case+Study.ipynb)
+[Logistic Regression Telecom Churn Case Study](dataset/Logistic+Regression+-+Telecom+Churn+Case+Study.ipynb)
 
 So, here’s what the data frame churn_data looks like:
 
