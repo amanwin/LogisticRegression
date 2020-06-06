@@ -188,3 +188,180 @@ Now, as you can clearly see, the first 5 customer IDs are exactly the same for e
 
 ## Data Cleaning and Preparation - I
 Before you jump into the actual model building, you first need to clean and prepare your data. As you might have seen in the last segment, all the useful information is present in three dataframes with ‘Customer ID’ being the common column. So as the first step, you need to merge these three data files so that you have all the useful data combined into a single master dataframe. 
+
+Now that you have the master dataframe in place, and you have also performed a binary mapping for few of the categorical variables, the next step would be to create dummy variables for features with multiple levels. The dummy variable creation process is similar to what you did in linear regression as well. 
+
+So the process of dummy variable creation was quite familiar, except this time, you manually dropped one of the columns for many dummy variables. For example, for the column ‘MultipleLines’, you dropped the level ‘MultipleLines_No phone service’ manually instead of simply using ‘drop_first = True’ which would’ve dropped the first level present in the ‘MultipleLines’ column. The reason we did this is that if you check the variables ‘MultipleLines’ using the following command, you can see that it has the following three levels:
+
+![text](dataset/dummy1.JPG)
+
+Now, out of these levels, it is best that you drop ‘No phone service’ since it isn’t of any use because it is anyway being indicated by the variable ‘PhoneService’ already present in the dataframe.
+
+To simply put it, the variable **‘PhoneService’** already tells you whether the phone services are availed or not by a particular customer. In fact, if you check the value counts of the variable 'PhoneService', following is the output that you get:
+
+![text](dataset/dummy2.JPG)
+
+You can see that the dummy variable for this level, i.e. 'MultipleLines_No phone service' is clearly redundant since it doesn't contain any extra information and hence, to drop it is the best option at this point. You can verify it similarly for all the other categorical variables for which one of the levels was manually dropped.
+
+### Data Cleaning and Preparation - II
+You’ve merged your dataframes and handled the categorical variables present in them. But you still need to check the data for any outliers or missing values and treat them accordingly. Let's get this done as well.
+
+![title](image/checking-missing-value.JPG)
+
+You saw that one of the columns, i.e. 'TotalCharges' had 11 missing values. Since this isn't a big number compared to the number of rows present in a dataset, we decided to drop them since we won't lose much data.
+
+![title](image/remove-nan.JPG)
+
+![title](image/checking-missing-percentage.JPG)
+
+Now that you have completely prepared your data, you can start with the preprocessing steps. As you might remember from the previous module, you first need to split the data into train and test sets and then rescale the features. So let’s start with that.
+
+![title](image/train-test-split.png)
+
+![title](image/scaling.JPG)
+
+We scaled the variables to standardise the three continuous variables — tenure, monthly charges and total charges. Recall that scaling basically reduces the values in a column to within a certain range — in this case, we have converted the values to the Z-scores.
+
+
+### Churn Rate and Class Imbalance
+
+Another thing to note here was the Churn Rate. You saw that the data has almost 27% churn rate. Checking the churn rate is important since you usually want your data to have a balance between the 0s and 1s (in this case churn and not-churn). 
+
+![title](image/churn-rate.JPG)
+
+The reason for having a balance is simple. Let’s do a simple thought experiment - if you had a data with, say, 95% not-churn (0) and just 5% churn (1), then even if you predict everything as 0, you would still get a model which is 95% accurate (though it is, of course, a bad model). This problem is called **class-imbalance** and you'll learn to solve such cases later.
+
+Fortunately, in this case, we have about 27% churn rate. This is neither exactly 'balanced' (which a 50-50 ratio would be called) nor heavily imbalanced. So we'll not have to do any special treatment for this dataset.
+
+## Building your First Model
+Let’s now proceed to model building. Recall that the first step in model building is to check the correlations between features to get an idea about how the different independent variables are correlated. In general, the process of feature selection is almost exactly analogous to linear regression.
+
+Looking at the correlations certainly did help, as you identified a lot of features beforehand which wouldn’t have been useful for model building. We can drop the following features after looking at the correlations from the heatmap:
+* MultipleLines_No
+* OnlineSecurity_No
+* OnlineBackup_No
+* DeviceProtection_No
+* TechSupport_No
+* StreamingTV_No
+* StreamingMovies_No
+
+If you look at the correlations between these dummy variables with their complimentary dummy variables, i.e. ‘MultipleLines_No’ with ‘MultipleLines_Yes’ or ‘OnlineSecurity_No’ with ‘OnlineSecurity_Yes’, you’ll find out they’re highly correlated. Have a look at the heat map below:
+
+![title](image/heatmap-edited.png)
+
+If you check the highlighted portion, you’ll see that there are high correlations among the pairs of dummy variables which were created for the same column. For example, **‘StreamingTV_No’** has a correlation of **-0.64** with **‘StreamingTV_Yes’**. So it is better than we drop one of these variables from each pair as they won’t add much value to the model. The choice of which of these pair of variables you desire to drop is completely up to you; we’ve chosen to drop all the 'Nos' because the 'Yeses' are generally more interpretable and easy-to-work-with variables.
+
+Now that you have completed all the pre-processing steps, inspected the correlation values and have eliminated a few variables, it’s time to build our first model. 
+
+So you finally built your first multivariate logistic regression model using all the features present in the dataset. This is the summary output for different variables that you got:
+
+![title](image/p-values.png)
+
+In this table, our key focus area is just the different **coefficients** and their respective **p-values**. As you can see, there are many variables whose p-values are high, implying that that variable is statistically insignificant. So we need to eliminate some of the variables in order to build a better model.
+
+We'll first eliminate a few features using Recursive Feature Elimination (RFE), and once we have reached a small set of variables to work with, we can then use manual feature elimination (i.e. manually eliminating features based on observing the p-values and VIFs).
+
+### Feature Elimination using RFE
+You built your first model in the previous segment. Based on the summary statistics, you inferred that many of the variables might be insignificant and hence, you need to do some feature elimination. Since the number of features is huge, let's first start off with an automated feature selection technique (RFE) and then move to manual feature elimination (using p-values and VIFs) - this is exactly the same process that you did in linear regression.
+
+So let's start off with the automatic feature selection technique - RFE.
+
+Let's see the steps you just performed one by one. First, you imported the logistic regression library from sklearn and created a logistic regression object using:
+
+![title](image/logistic_regression.JPG)
+
+Then you run an RFE on the dataset using the same command as you did in linear regression. In this case, we choose to select 15 features first (15 is, of course, an arbitrary number).
+
+![title](image/logistic_regression1.JPG)
+
+RFE selected 15 features for you and following is the output you got:
+
+![title](image/RFE.png)
+
+You can see that RFE has eliminated certain features such as 'MonthlyCharges', 'Partner', 'Dependents', etc.    
+
+We decided to go ahead with this model but since we are also interested in the statistics, we take the columns selected by RFE and use them to build a model using statsmodels using:
+
+![title](image/logistic_regression2.JPG)
+
+Here, you use the **GLM (Generalized Linear Models)** method of the library statsmodels. **'Binomial()'** in the 'family' argument tells statsmodels that it needs to fit **a logit curve to a binomial data** (i.e. in which the target will have just two classes, here 'Churn' and 'Non-Churn').
+
+Now, recall that the logistic regression curve gives you the **probabilities of churning and not churning**. You can get these probabilities by simply using the **'predict'** function as shown in the notebook.
+
+Since the logistic curve gives you just the probabilities and not the actual classification of **'Churn'** and **'Non-Churn'**, you need to find a **threshold probability** to classify customers as 'churn' and 'non-churn'. Here, we choose 0.5 as an arbitrary cutoff wherein if the probability of a particular customer churning is less than 0.5, you'd classify it as **'Non-Churn'** and if it's greater than 0.5, you'd classify it as **'Churn'. The choice of 0.5 is completely arbitrary at this stage** and you'll learn how to find the optimal cutoff in 'Model Evaluation', but for now, we'll move forward with 0.5 as the cutoff.
+
+### Confusion Matrix and Accuracy
+You chose a cutoff of 0.5 in order to classify the customers into 'Churn' and 'Non-Churn'. Now, since you're classifying the customers into two classes, you'll obviously have some errors. The classes of errors that would be there are:
+* 'Churn' customers being (incorrectly) classified as 'Non-Churn'
+* 'Non-Churn' customers being (incorrectly) classified as 'Churn'
+
+To capture these errors, and to evaluate how well the model is, you'll use something known as the **'Confusion Matrix'**. A typical confusion matrix would look like the following:
+
+![title](image/confusion-matrix.png)
+
+This table shows a comparison of the predicted and actual labels. The actual labels are along the vertical axis, while the predicted labels are along the horizontal axis. Thus, the second row and first column (263) is the number of customers who have actually ‘churned’ but the model has predicted them as non-churn.
+
+Similarly, the cell at second row, the second column (298) is the number of customers who are actually ‘churn’ and also predicted as ‘churn’.
+
+Note that this is an example table and not what you'll get in Python for the model you've built so far. It is just used an example to illustrate the concept.
+
+Now, the simplest model evaluation metric for classification models is accuracy - it is the percentage of correctly predicted labels. So what would the correctly predicted labels be? They would be:
+* 'Churn' customers being actually identified as churn
+* 'Non-churn' customers being actually identified as non-churn.
+
+As you can see from the table above, the correctly predicted labels are contained in the first row and first column, and the last row and last column as can be seen highlighted in the table below:
+
+![title](image/confusion-matrix1.png)
+
+Now, accuracy is defined as:
+
+![title](image/accuracy.JPG)
+
+Hence, using the table, we can say that the accuracy for this table would be:
+
+![title](image/accuracy1.JPG)
+
+Now that you know about confusion matrix and accuracy, let's see how good is your model built so far based on the accuracy. 
+
+![title](image/confusion-matrix-accuracy.png)
+
+So using the confusion matrix, you got an accuracy of about 80.8% which seems to be a good number to begin with. The steps you need to calculate accuracy are:
+* Create the confusion matrix
+* Calculate the accuracy by applying the 'accuracy_score' function to the above matrix
+
+### Manual Feature Elimination
+
+Recall that you had used RFE to select 15 features. But as you saw in the pairwise correlations, there are high values of correlations present between the 15 features, i.e. there is still some multicollinearity among the features. So you definitely need to check the VIFs as well to further eliminate the redundant variables. Recall that VIF  calculates how well one independent variable is explained by all the other independent variables combined. And its formula is given as:
+
+![title](image/VIF.JPG)
+
+where 'i' refers to the ith variable which is being represented as a combination of rest of the independent variables.
+
+To summarise, you basically performed an iterative manual feature elimination using the VIFs and p-values repeatedly. You also kept on checking the value of accuracy to make sure that dropping a particular feature doesn't affect the accuracy much. 
+
+This was the set of 15 features that RFE had selected which we began with:
+
+![title](image/MFE1.png)
+
+And this is the final set of features which you arrived at after eliminating features manually:
+
+![title](image/MFE2.png)
+
+As you can see, we had dropped the features 'PhoneService' and 'TotalCharges' as a part of manual feature elimination.
+Now that we have a final model, we can begin with model evaluation and making predictions.
+
+## Multivariate Logistic Regression - Model Evaluation
+In this session, you will first learn about a few more metrics beyond accuracy that are essential to evaluate the performance of a logistic regression model. Then based on these metrics, you'll learn how to find out the optimal scenario where the model will perform the best. The metrics that you'll learn about are:
+* Accuracy
+* Sensitivity, specificity and the ROC curve
+* Precision and Recall
+Finally, once you've chosen the optimal scenario based on the evaluation metrics, we'll finally go on and make predictions on the test dataset and see how your model performs there as well.
+
+
+
+
+
+
+
+
+
