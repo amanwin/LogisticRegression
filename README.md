@@ -357,8 +357,87 @@ In this session, you will first learn about a few more metrics beyond accuracy t
 * Precision and Recall
 Finally, once you've chosen the optimal scenario based on the evaluation metrics, we'll finally go on and make predictions on the test dataset and see how your model performs there as well.
 
+### Metrics Beyond Accuracy: Sensitivity & Specificity
+In the previous session, you built a logistic regression model and arrived at the final set of features using RFE and manual feature elimination. You got an accuracy of about **80.475%** for the model. But the question now is - Is accuracy enough to assess the goodness of the model? As you'll see, the answer is a big **NO!** 
 
+To understand why accuracy is often not the best metric, consider this business problem -
 
+"Let’s say that increasing ‘churn’ is the most serious issue in the telecom company, and the company desperately wants to retain customers. To do that, the marketing head decides to roll out dffers to all customeiscounts and ors who are likely to churn - ideally, not a single ‘churn’ customer should be missed. Hence, it is important that the model identifies almost all the ‘churn’ customers correctly. It is fine if it incorrectly predicts some of the ‘non-churn’ customers as ‘churn’ since in that case, the worst that will happen is that the company will offer discounts to those customers who would anyway stay."
+
+Let's take a look at the confusion matrix we got for our final model again - the actual labels are along the column while the predicted labels are along the rows (for e.g. 595 customers are actually 'churn' but predicted as 'not-churn'):
+
+![title](image/churn1.JPG)
+
+From the table above, you can see that there are **595 + 692  = 1287** actual ‘churn’ customers, so ideally the model should predict all of them as ‘churn’ (i.e. corresponding to the business problem above). But out of these 1287, the current model only predicts 692 as ‘churn’. Thus, only 692 out of 1287, or **only about 53% of ‘churn’ customers, will be predicted by the model as ‘churn’**. This is very risky - the company won’t be able to roll out offers to the rest 47% ‘churn’ customers and they could switch to a competitor!
+
+So although the accuracy is about 80%, the model only predicts 53% of churn cases correctly.
+
+In essence, what’s happening here is that you care more about one class (class='churn') than the other. This is a very common situation in classification problems - you almost always care more about one class than the other. On the other hand, the accuracy tells you model's performance on both classes combined - which is fine, but not the most important metric.
+
+Consider another example - suppose you're building a logistic regression model for cancer patients. Based on certain features, you need to predict whether the patient has cancer or not. In this case, if you incorrectly predict many diseased patients as 'Not having cancer', it can be very risky. In such cases, it is better that instead of looking at the overall accuracy, you care about predicting the 1's (the diseased) correctly. 
+
+Similarly, if you're building a model to determine whether you should block (where blocking is a 1 and not blocking is a 0) a customer's transactions or not based on his past transaction behaviour in order to identify frauds, you'd care more about getting the 0's right. This is because you might not want to wrongly block a good customer's transactions as it might lead to a very bad customer experience. 
+
+Hence, it is very crucial that you consider the **overall business problem** you are trying to solve to decide the metric you want to maximise or minimise.
+
+This brings us to two of the most commonly used metrics to evaluate a classification model:
+1. Sensitivity
+2. Specificity
+Let's understand these metrics one by one. **Sensitivity** is defined as:
+
+![title](image/sensitivity.JPG)
+
+Here, 'yes' means 'churn' and 'no' means 'non-churn'. Let's look at the confusion matrix again.
+
+![title](image/churn1.JPG)
+
+The different elements in this matrix can be labelled as follows:
+
+![title](image/churn2.JPG)
+
+* The first cell contains the actual 'Not Churns' being predicted as 'Not-Churn' and hence, is labelled **'True Negatives'** (Negative implying that the class is '0', here, Not-Churn.).
+* The second cell contains the actual 'Not Churns' being predicted as 'Churn' and hence, is labelled **'False Positive'** (because it is predicted as 'Churn' (Positive) but in actuality, it's not a Churn).
+* Similarly, the third cell contains the actual 'Churns' being predicted as 'Not Churn' which is why we call it **'False Negative'**.
+* And finally, the fourth cell contains the actual 'Churns' being predicted as 'Churn' and so, it's labelled as **'True Positives'**.
+
+Now, to find out the sensitivity, you first need the number of actual Yeses correctly predicted. This number can be found at in the last row, last column of the matrix (which is denoted as true positives). This number if **692**. Now, you need the total number of actual Yeses. This number will be the sum of the numbers present in the last row, i.e. the actual number of churns (this will include the actual churns being wrongly identified as not-churns, and the actual churns being correctly identified as churns). Hence, you get **(595 + 692) = 1287**. 
+
+Now, when you replace these values in the sensitivity formula, you get:
+
+![title](image/sensitivity1.JPG)
+
+Thus, you can clearly see that although you had a high accuracy **(~80.475%)**, your sensitivity turned out to be quite low **(~53.768%)**
+
+Now, similarly, specificity is defined as:
+
+![title](image/specificity.JPG)
+
+As you can now infer, this value will be given by the value **True Negatives (3269)** divided by the actual number of negatives, i.e. **True Negatives + False Positives (3269 + 366 = 3635)**. Hence, by replacing these values in the formula, you get specificity as:   
+
+![title](image/specificity1.JPG)
+
+### Sensitivity & Specificity in Python
+
+In the last segment, you learnt the importance of having evaluation metrics other than accuracy. Thus, you were introduced to two new metrics - **sensitivity and specificity**. You learnt the theory of sensitivity and specificity and how to calculate them using a confusion matrix. Now, let's learn how to calculate these metrics in Python as well.
+
+You can access the different elements in the matrix using the following indexing - 
+
+![title](image/confusion-matrix-index.JPG)
+
+And now, let's rewrite the formulas of sensitivity and specificity using the labels of the confusion matrix.
+
+![title](image/sensitivity-specificity.JPG)
+
+So your model seems to have **high accuracy (~80.475%)** and **high specificity (~89.931%)**, but **low sensitivity (~53.768%)** and since you're interested in identifying the customers which might churn, you clearly need to deal with this.
+
+## ROC Curve
+So far you have learned about some evaluation metrics and saw why they're important to evaluate a logistic regression model. Now, recall that the sensitivity that you got **(~53.768%)** was quite low and clearly needs to be dealt with. But what was the cause of such a low sensitivity in the first place?
+
+If you remember, when you assigned 0s and 1s to the customers after building the model, you arbitrarily chose a cut-off of 0.5 wherein if the probability of churning for a customer is greater than **0.5**, you classified it as a 'Churn' and if the probability of churning for a customer is less than 0.5, you classified it as a 'Non-churn'. 
+
+Now, this cut-off was chosen at random and there was no particular logic behind it. So it might not be the ideal cut-off point for classification which is why we might be getting such a low sensitivity. So how do you find the ideal cutoff point? For a more intuitive understanding, this part has been demonstrated in Excel. You can download the excel file from below.
+
+[ROC Curve - Excel Demo](dataset/ROC+Curve+-+Excel+Demo.xlsx)
 
 
 
