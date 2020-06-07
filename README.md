@@ -430,7 +430,7 @@ And now, let's rewrite the formulas of sensitivity and specificity using the lab
 
 So your model seems to have **high accuracy (~80.475%)** and **high specificity (~89.931%)**, but **low sensitivity (~53.768%)** and since you're interested in identifying the customers which might churn, you clearly need to deal with this.
 
-## ROC Curve
+## ROC Curve (Receiver operating characteristic Curve)
 So far you have learned about some evaluation metrics and saw why they're important to evaluate a logistic regression model. Now, recall that the sensitivity that you got **(~53.768%)** was quite low and clearly needs to be dealt with. But what was the cause of such a low sensitivity in the first place?
 
 If you remember, when you assigned 0s and 1s to the customers after building the model, you arbitrarily chose a cut-off of 0.5 wherein if the probability of churning for a customer is greater than **0.5**, you classified it as a 'Churn' and if the probability of churning for a customer is less than 0.5, you classified it as a 'Non-churn'. 
@@ -439,6 +439,47 @@ Now, this cut-off was chosen at random and there was no particular logic behind 
 
 [ROC Curve - Excel Demo](dataset/ROC+Curve+-+Excel+Demo.xlsx)
 
+So you saw that the predicted labels depend entirely on the cutoff or the threshold that you have chosen. For low values of threshold, you'd have a higher number of customers predicted as a 1 (Churn). This is because if the threshold is low, it basically means that everything above that threshold would be one and everything below that threshold would be zero. So naturally, a lower cutoff would mean a higher number of customers being identified as 'Churn'. Similarly, for high values of threshold, you'd have a higher number of customer predicted as a 0 (Not-Churn) and a lower number of customers predicted as a 1 (Churn).
+
+Now, let's move forward with our discussion on how to choose an optimal threshold point. For that, you'd first need a few basic terminologies (some of which you have seen in earlier sections.)
+
+So you learned about the following two terminologies -
+
+### True Positive Rate (TPR)
+This value gives you the number of positives correctly predicted divided by the total number of positives. Its formula as shown in the video is:
+
+![title](image/TPR.JPG)
+
+Now, recall the labels in the confusion matrix,
+
+![title](image/confusion-matrix-label.JPG)
+
+As you can see, the highlighted portion shows the row containing the total number of actual positives. Therefore, the denominator term, i.e. in the formula for TPR is nothing but -
+
+![title](image/TPR1.JPG)
+
+As you might remember, the above formula is nothing but the formula for **sensitivity**. Hence, the term True Positive Rate that you just learnt about is nothing but sensitivity.
+
+The second term which you saw was -
+
+### False Positive Rate (FPR)
+This term gives you the number of false positives (0s predicted as 1s) divided by the total number of negatives. The formula was -
+
+![title](image/FPR1.JPG)
+
+Again, if you recall the formula for specificity, it is given by - 
+
+![title](image/specificity2.JPG)
+
+Hence, you can see that the formula for False Positive Rate (FPR) is nothing but **(1 - Specificity)**. You can easily verify it yourself.
+
+So, now that you have understood what these terms are, you'll now learn about **ROC Curves** which show the **tradeoff between the True Positive Rate (TPR) and the False Positive Rate (FPR)**. And as was established from the formulas above, TPR and FPR are nothing but sensitivity and (1 - specificity), so it can also be looked at as a tradeoff between sensitivity and specificity. 
+
+So you can clearly see that there is **a tradeoff between the True Positive Rate and the False Positive Rate, or simply, a tradeoff between sensitivity and specificity.** When you plot the true positive rate against the false positive rate, you get a graph which shows the trade-off between them and this curve is known as the ROC curve. The following image shows the ROC curve that you plotted in Excel.
+
+![title](image/ROC+Excel.JPG)
+
+As you can see, for higher values of TPR, you will also have higher values of FPR, which might not be good. So it's all about finding a balance between these two metrics and that's what the ROC curve helps you find. You also learnt that a good ROC curve is the one which touches the upper-left corner of the graph; so higher the area under the curve of an ROC curve, the better is your model.
 
 
 
