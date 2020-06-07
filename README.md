@@ -477,11 +477,84 @@ So, now that you have understood what these terms are, you'll now learn about **
 
 So you can clearly see that there is **a tradeoff between the True Positive Rate and the False Positive Rate, or simply, a tradeoff between sensitivity and specificity.** When you plot the true positive rate against the false positive rate, you get a graph which shows the trade-off between them and this curve is known as the ROC curve. The following image shows the ROC curve that you plotted in Excel.
 
-![title](image/ROC+Excel.JPG)
+![title](image/ROC+Excel.png)
 
 As you can see, for higher values of TPR, you will also have higher values of FPR, which might not be good. So it's all about finding a balance between these two metrics and that's what the ROC curve helps you find. You also learnt that a good ROC curve is the one which touches the upper-left corner of the graph; so higher the area under the curve of an ROC curve, the better is your model.
 
+## ROC Curve in Python
+Now that you have learnt the theory of ROC curve, let's plot an ROC curve in Python for our telecom churn case study.
+Let's first take a look at the ROC curve code that you just saw:
 
+![title](image/ROC-python.JPG)
 
+Notice that in the last line you're giving the actual Churn values and the respective Churn Probabilities to the curve.
 
+### Interpreting the ROC Curve
+Following is the ROC curve that you got. Note that it is the same curve you got in Excel as well but that was using scatter plot to represent the discrete points and here we are using a continuous line.
+
+![title](image/ROC+curve)
+
+#### The 45 degree Diagonal
+For a completely random model, the ROC curve will pass through the 45-degree line that has been shown in the graph above and in the best case it passes through the upper left corner of the graph. So the least area that an ROC curve can have is 0.5, and the highest area it can have is 1.
+
+#### The Sensitivity vs Specificity Trade-off
+As you saw in the last segment as well, the ROC curve shows the trade-off between True Positive Rate and False Positive Rate which essentially can also be viewed as a tradeoff between Sensitivity and Specificity. As you can see, on the Y-axis, you have the values of Sensitivity and on the X-axis, you have the value of (1 - Specificity). Notice that in the curve when Sensitivity is increasing, (1 - Specificity), And since, (1 - Specificity) is increasing, it simply means that Specificity is decreasing. 
+
+#### Area Under the Curve
+By determining the Area under the curve (AUC) of a ROC curve, you can determine how good the model is. If the ROC curve is more towards the upper-left corner of the graph, it means that the model is very good and if it is more towards the 45-degree diagonal, it means that the model is almost completely random. So, the larger the AUC, the better will be your model which is something you saw in the last segment as well.
+
+## Finding the Optimal Threshold
+In the last segment, you saw that the ROC curve essentially shows you a trade-off between the sensitivity and specificity. But how do you find the optimal threshold in order to get a decent accuracy, sensitivity, as well as specificity?
+
+So, first we calculated the values of accuracy, sensitivity, and specificity at different cut-off values and stored them in a dataframe using the code below:
+
+![title](image/accuracy-df.JPG)
+
+The key takeaway from this code is the accuracy, sensitivity, and specificity values which have been calculated using the appropriate elements in the confusion matrix. The code outputted the following dataframe:
+
+![title](image/SensiSpeci.png)
+
+As you can see, when the probability thresholds are very low, the sensitivity is very high and specificity is very low. Similarly, for larger probability thresholds, the sensitivity values are very low but the specificity values are very high. And at about 0.3, the three metrics seem to be almost equal with decent values and hence, we choose 0.3 as the optimal cut-off point. The following graph also showcases that at about 0.3, the three metrics intersect.
+
+![title](image/Tradeoff.png)
+
+As you can see, at about a threshold of 0.3, the curves of accuracy, sensitivity and specificity intersect, and they all take a value of around 77-78%.
+
+We could've chosen any other cut-off point as well based on which of these metrics you want to be high. If you want to capture the 'Churns' better, you could have let go of a little accuracy and would've chosen an even lower cut-off and vice-versa. It is completely dependent on the situation you're in. In this case, we just chose the 'Optimal' cut-off point to give you a fair idea of how the thresholds should be chosen.
+
+### Precision & Recall
+So far you learnt about sensitivity and specificity. You learnt how these metrics are defined, why they are important, and how to calculate them. Now, apart from sensitivity and specificity, there are two more metrics that are widely used in the industry which you should know about. They're known as **'Precision'** and **'Recall'**. Now, these metrics are very similar to sensitivity and specificity; it's just that knowing the exact terminologies can be helpful as both of these pairs of metrics are often used in the industry.
+
+Let's go through the definitions of precision and recall:
+
+**Precision:** Probability that a predicted 'Yes' is actually a 'Yes'.
+
+![title](image/Precision.JPG)
+
+Remember that 'Precision' is the same as the 'Positive Predictive Value' that you learnt about earlier. From now on, we will call it precision.
+
+**Recall:**  Probability that an actual 'Yes' case is predicted correctly.
+
+![title](image/Recall.JPG)
+
+Remember that 'Recall' is exactly the same as sensitivity. Don't get confused between these.
+
+You might be wondering, if these are almost the same, then why even study them separately? The main reason behind this is that in the industry, some businesses follow the 'Sensitivity-Specificity' view and some other businesses follow the 'Precision-Recall' view and hence, will be helpful for you if you know both these standard pairs of metrics.
+
+Now, let's check the precision and recall in code as well.
+
+![title](image/Precision-Recall.JPG)
+
+Whatever view you select might give you different interpretations for the same model. It is completely up to you which view you choose to take while building a logistic regression model.
+
+So similar to the sensitivity-specificity tradeoff, you learnt that there is a tradeoff between precision and recall as well. Following is the tradeoff curve that you plotted:
+
+![title](image/Precision-Recall-tradeoff.JPG)
+
+As you can see, the curve is similar to what you got for sensitivity and specificity. Except now, the curve for precision is quite jumpy towards the end. This is because the denominator of precision, i.e. (TP+FP) is not constant as these are the predicted values of 1s. And because the predicted values can swing wildly, you get a very jumpy curve.
+
+### Making Predictions
+So the model evaluation on the train set is complete and the model seems to be doing a decent job. You saw two views of the evaluation metrics - one was the sensitivity-specificity view, and the other was the precision-recall view. You can choose any of the metrics you like; it is completely up to you. In this session, we will go forward with the sensitivity-specificity view of things and make predictions based on the 0.3 cut-off that we decided earlier.
+
+The metrics seem to hold on the test dataset as well. So, it looks like you have created a decent model for the churn dataset as the metrics are decent for both the training and test datasets.
 
