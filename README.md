@@ -558,3 +558,136 @@ So the model evaluation on the train set is complete and the model seems to be d
 
 The metrics seem to hold on the test dataset as well. So, it looks like you have created a decent model for the churn dataset as the metrics are decent for both the training and test datasets.
 
+
+# Logistic Regression - Industry Applications - Part I
+
+## Introduction
+Welcome to the session on "Industry Applications of Logistic Regression". In the previous sessions, you learnt the process of building a logistic regression model in Python and evaluating its performance using a few key metrics.
+
+In this session
+You will learn how to use the concepts you learnt earlier in actual business settings. Broadly speaking, the agenda for the session is as follows:
+1. Types of logistic regression
+2. Nuances of logistic regression
+    1. Sample selection
+    2. Segmentation
+    3. Variable transformation
+
+## Getting familiar with Logistic Regression
+So far, you have understood how logistic regression works and how performance measures can be evaluated. Now that you've acquired the **theoretical knowledge** of this technique, let's move on to its **application** since it is equally important. So, let’s understand the various applications of logistic regression in different business scenarios across multiple industries.
+
+In general, logistic regression by definition tries to predict what state a particular individual or system will be in the future. You learnt about the two **types of logistic regression**:
+1. Binary logit
+2. Multinomial logit
+
+**Binary logit** involves two levels of the dependent variable. For example, the telecom churn example you learnt in earlier sessions is a binary logistic regression problem, as it classifies customers into two levels, churns and non-churns. **Multinomial logit**, however, involves more than 2 levels of dependent variables, such as whether a customer will purchase product A, product B or not purchase anything.
+
+So, the rule of thumb for deciding whether the problem is a binary classification problem or multinomial classification problem is that you should first understand the dependent variable.
+
+#### Two main differences between logistic regression and linear regression
+The two main important differences between logistic and linear regression are: 1. Dependent/response variable in linear regression is continuous whereas, in logistic regression, it is the discrete type. 2. Cost function in linear regression minimise the error term Sum(Actual(Y)-Predicted(Y))^2 but logistic regression uses maximum likelihood method for maximising probabilities.
+
+To summarise, logistic regression is a widely used technique in various types of industries. This is because of two **main reasons**:
+1. It is very easy to **understand** and offers an **intuitive explanation** of the variables
+2. The output (i.e. the probabilities) has a linear relationship with the log of odds, which can be very useful for explaining results to managers
+
+Also, there is something called model scores. In an earlier session though, you learnt that a logistic regression model gives log odds as output. So, to understand what scores are, let’s go back to the telecom churn example from earlier sessions:
+
+![title](image/log-odds-table.JPG)
+
+You must have noticed the column called score. Basically, it’s a different way of reporting your findings. Earlier, you saw that log odds make more sense as the output instead of probabilities because of their linear relationship with the variables. However, log odds have weird values, such as -0.245, -0.156 etc., which is not a very elegant form of output. Hence, instead of reporting the log odds as output, you can report scores.
+
+Score is calculated using the following expression:
+
+![title](image/score.JPG)
+
+This **expression** is decided based on business understanding. You could come up with your own expression for the score, one that converts log odds into a more presentable form.
+
+## Nuances of Logistic Regression - Sample Selection
+In earlier sessions, you learnt how to build a logistic regression model in Python, and how to evaluate it. However, even before you start building a model, you have to decide what kind of data would be appropriate for building it.
+
+Selecting the right sample is essential for solving any business problem. As discussed in the lecture, there are major errors you should be on the lookout for while selecting a sample. These include: 
+1. **Cyclical or seasonal fluctuations** in the business that need to be taken care of while building the samples. E.g. Diwali sales, economic ups and downs, etc.
+2. The sample should be **representative of the population** on which the model will be applied in the future.
+3. For **rare events samples**, the sample should be balanced before it is used for modelling.
+
+So, these were the nuances of sample selection. Are there any other nuances you need to be aware of? Yes. In the next segment, you will learn about the various nuances of segmentation.
+
+## Nuances of Logistic Regression - Segmentation
+You learnt the nuances of sample selection in the last lecture. However, suppose the model you built, after selecting the data with all due considerations, has a low accuracy. Here, you know that the model is not performing well on the chosen sample data set. Your task is to make a model which gives a decent model performance.
+
+So, assuming that you cannot take another sample, what can you do to increase the model’s performance? There are various ways of handling such problems in industries, and one of them is segmentation of the population.
+
+It is very helpful to perform segmentation of the population before building a model.Let's talk about the ICICI example again.
+
+For students and salaried people, different variables may be important. While students' defaulting and not defaulting will depend on factors such as program enrolled for, the prestige of the university attended, parents' income, etc., the probability of salaried people will depend on factors such as marital status, income, etc. So, the predictive pattern across these two segments is very different, and hence, it would make more sense to make different child models for both of them, than to make one parent model.
+
+A segmentation that divides your population into male and female may not be that effective, as the predictive pattern would not be that different for these two segments. 
+
+## Nuances of Logistic Regression - Variable Transformation-I
+In the last lecture, you learnt about segmentation, which is primarily done for increasing the predictive power of a model. However, so far you’ve only seen topics such as sample selection and segmentation, which talk about the data that is used in the **model building process**.
+
+Now, the next steps, as you may recall from the last session, are dummy variable creation, standardising scales of continuous variables, etc. These processes are generally referred to as variable transformation. Can other types of variable transformations be performed before building a logistic regression model?
+
+From earlier sessions, you already know that categorical variables have to be transformed into dummies. Also, you were told that numeric variables have to be standardised, so that they all have the same scale. 
+
+There are some pros and cons of transforming variables to dummies. Creating dummies for **categorical variables** is very straightforward. You can directly create n-1 new variables from an existing categorical variable if it has n levels. But for **continuous variables**, you would be required to do some kind of EDA analysis for binning the variables.
+
+The **major advantage** offered by **dummies** especially for continuous variables is that they make the **model stable**. In other words, small variations in the variables would not have a very big impact on a model that was made using dummies, but they would still have a sizeable impact on a model built using continuous variables as is.
+
+On the other side, there are some **major disadvantages** that exist. E.g. if you change the continuous variable to dummies, all the data will be **compressed** into very few categories and that might result in **data clumping**.
+
+## Nuances of Logistic Regression - Variable Transformation-II
+So, creating dummy variables is one way of transforming variables. Let’s now move on to another technique commonly used for transforming variables — **Weight of evidence (WOE) analysis.**
+
+**Three important** points are:
+1. Calculating **woe values** for fine binning and coarse binning
+2. The **importance** of woe for fine binning and coarse binning
+3. The **usage** of woe transformation
+
+**WOE** can be calculated using the following equation:
+
+![title](image/WOE.JPG)
+
+Once you've calculated woe values, it is also important to note that they should follow an **increasing or decreasing trend** across bins. If the trend is not **monotonic**, then you would need to compress the buckets/ bins (coarse buckets) of that variable and then calculate the WOE values again.
+
+There are two main advantages of WOE:
+1. WOE reflects group identity: This means it captures the general trend of distribution of good and bad customers. E.g. the difference between customers with 30% credit card utilisation and 45% credit card utilisation is not the same as the difference between customers with 45% credit card utilisation and customers with 60% credit card utilisation. This is captured by transforming the variable credit card utilisation using WOE.
+2. WOE helps you in treating missing values logically for both types of variables — categorical and continuous. E.g. in the credit card case, if you replace the continuous variable credit card utilisation with WOE values, you would replace all categories mentioned above (0%-45%, 45% - 60%, etc.) with certain specific values, and that would include the category "missing" as well, which would also be replaced with a WOE value.
+
+So, basically, the pros and cons of a WOE transformation are similar to dummy variables.
+1. Pros: The model becomes more stable because small changes in the continuous variables will not impact the input so much.
+2. Cons: You may end up doing some score clumping.
+
+This is because when you are using WOE values in your model, you are doing something similar to creating dummy variables — you are replacing a range of values with an indicative variable. It is just that, instead of replacing it with a simple 1 or 0, which was not thought out at all, you are replacing it with a well thought out WOE value. Hence, the chances of undesired score clumping will be a lot less here.
+
+Let's now move on to **IV (Information Value)**, which is a very important concept.
+
+So, **information value** can be calculated using the following expression:
+
+![title](image/information-value.JPG)
+
+It is an important indicator of **predictive power**.
+
+Mainly, it helps you understand how the binning of variables should be done. The binning should be done such that the WOE trend across bins is monotonic — either increasing all the time or decreasing all the time. But one more thing that needs to be taken care of is that IV (infomation value) should be high.
+
+You can download the data set from below where we have used the concept of WOE & Information Value:
+
+[Tenure-Contract-Woe-Data](dataset/Tenure-woe-data.xlsx)
+
+In the attached file, there are three sheets. The first sheet contains three variables (Tenure, Second Contract and Churn) from the telecom data. The second sheet contains the distribution of the binned tenure variable. The third sheet contains the distribution of goods and bad information of the contract variable.
+
+[Tenure-Contract-Woe-Data-Solution](dataset/Tenure-woe-data-solution.xlsx)
+
+## Nuances of Logistic Regression - Variable Transformation-III
+In previous sessions, you learnt about the different ways of transforming woe transformation, the importance of information variables, and various other advantages and disadvantages of woe transformation.
+
+#### Missing Value -WOE
+The NA values can be treated with WOE values. However, you can replace the NA bucket with a bucket which shows similar woe values.
+
+Let’s try to practice this with some examples. For this exercise, you are supposed to download the data set from below which is the subset data of the loan file:
+
+[Employment Woe Data](dataset/LR-Employment-woe-data.xlsx)
+
+In this file, there are two sheets. The first one contains the loan data set with only two variables — Employment length and Default. The second file contains the bucket distributions of employment length.
+
+[Employment Woe Solution]((dataset/LR-Employment-woe-data-solution.xlsx)
