@@ -690,4 +690,162 @@ Let’s try to practice this with some examples. For this exercise, you are supp
 
 In this file, there are two sheets. The first one contains the loan data set with only two variables — Employment length and Default. The second file contains the bucket distributions of employment length.
 
-[Employment Woe Solution]((dataset/LR-Employment-woe-data-solution.xlsx)
+[Employment Woe Solution](dataset/LR-Employment-woe-data-solution.xlsx)
+
+## Commonly Faced Challenges in Implementation of Logistic Regression
+Let's go through some more challenges faced regularly by data analysts while building a logistic regression model.
+Let's look back at the credit card example from earlier sessions.
+
+Let's look at 2 cases, where the variable's value is missing (equal to NA):
+1. **Utilisation is missing:** As mentioned earlier, if this variable is missing for a particular customer, that could very well be because the bank did not find that customer worthy enough for a credit card. Hence, these missing values are not missing at random, and it would be unfair to just replace them with the mean or the median. As mentioned earlier, it would be wiser to perform a WOE analysis and then replace these values.
+2. **Age is missing:** Consider why the variable age is missing for some customers. Here, it may actually make more sense to just replace the missing value with the mean or the median, instead of wasting time on WOE analysis. This is because it is very likely that the variable age is just missing because of a system error or a manual error, and there is no clear pattern behind the missing values.
+
+There are two more methods for treating missing values. If you wish to read about them, you can go through both of them here:
+1. Markov Chain Monte Carlo - SAS Support (https://support.sas.com/resources/papers/proceedings13/436-2013.pdf)
+2. Expectation Maximisation - Oxford University Statistics (http://www.stats.ox.ac.uk/~steffen/teaching/fsmHT07/fsm407c.pdf)
+
+### Model Evaluation (A Second Look)
+In a previous session on model evaluation, you learnt about various model evaluation measures, such as accuracy, sensitivity, specificity, KS statistic, etc. Now, let's look at some more measures commonly used for model evaluation.
+
+Following shows the ROC curve for 3 cases, i.e. the random model (orange line), the ideal model (grey line), and the real model(blue line), in our case, the telecom churn model.
+
+![title](image/roc-model.png)
+
+Clearly, the perfect model is pretty much a right triangle, whereas the random model is a straight line. Basically, a model that rises steeply is a good model.
+
+Another way of saying that is — it will have a higher area under the curve. So, the Gini coefficient, which is nothing but a fancy word and is given by -
+
+![title](image/gini.JPG)
+
+will be high for a good model.
+
+## Model Validation and Importance of Stability
+So, you've seen how a model is evaluated, using various parameters such as accuracy, sensitivity, KS statistic, gini coefficient, etc. However, so far you've only tested models on data that was formed after splitting one data set into training data and testing data. Is that enough? 
+
+Let's again look at the telecom churn example from before. The data used to build the model was from 2014.
+You split the original data into two parts, i.e. training and testing data. However, these two parts were both built with data from 2014.
+
+![title](image/train-test.JPG)
+
+This is called **in-sample validation**. Testing your model on this test data may not be enough though, as the test data here is too similar to training data.
+
+So, it makes sense to actually test the model on data that is from some other time, like 2016. This is called **out-of-time validation**.
+
+![title](image/out-of-time.JPG)
+
+Another way to do the same thing is to use **K-fold cross validation**. Basically, the evaluation of the sample is done for k-iterations. E.g. here's a representation of how 3-fold cross validation works:
+
+![title](image/k-cross-validation.JPG)
+
+Basically, there are 3 iterations in which evaluation is done. In the first iteration, 1/3rd of the data is selected as training data and the remaining 2/3rd of it is selected as testing data. In the next iteration, a different 1/3rd of the data is selected as the training data set and then the model is built and evaluated. Similarly, the third iteration is completed.
+
+Such an approach is necessary if the data you have for model building is very small, i.e. has very few data points.
+
+Obviously, a good model will be stable. A model is considered stable if it has:
+1. **Performance Stability:** Results of in-sample validation approximately match those of out-of-time validation
+2. **Variable Stability:** The sample used for model building hasn't changed too much and has the same general characteristics
+
+## Tracking of Model Performance Over Time
+Now, suppose you conclude, based on the previously mentioned criteria, that the model is not stable. What will you do then?
+
+Let's go back to the telecom churn example. If you recall, the model was built using data from 2014. Now suppose, you are tracking its performance over time, and that ends up giving you the following results:
+
+![title](image/recalibration.JPG)
+
+So, the **first time**, when the model's Gini dropped to **0.72**, you avoided building a new model. Basically, you just **recalibrated**, i.e. updated the coefficients of the variables. That resulted in a slight increase of Gini. However, the next time Gini dropped to a low value, i.e. **0.71**, we just rebuilt the model, i.e. got new sample data, performed data prep, etc. and built the entire model.
+
+## Subjective Questions - I
+The following questions related to logistic regression are asked quite frequently in interviews.
+
+**Q1. What is a logistic function? What is the range of values of a logistic function?**
+The logistic function is as defined below:
+
+![title](image/logistic-function.JPG)                                                                           
+
+The values of a logistic function will range from 0 to 1. The values of Z will vary from −∞ to +∞.
+
+**Q2. Why is logistic regression very popular/widely used?**
+Logistic regression is famous because it can convert the values of logits (log-odds), which can range from −∞ to +∞ to a range between 0 and 1. As logistic functions output the probability of occurrence of an event, it can be applied to many real-life scenarios. It is for this reason that the logistic regression model is very popular. Another reason why logistic fairs in comparison to linear regression is that it is able to handle the categorical variables.
+
+**Q3. What is the formula for the logistic regression function?**
+In general, the formula for logistic regression is given by the following expression:
+
+![title](image/logistic-regression-formula.JPG)
+
+**Q4. How can the probability of a logistic regression model be expressed as a conditional probability?**
+The conditional probability can be given as:
+
+![title](image/question-5.JPG)
+
+It is the probability of the target variable to take up a discrete value (either 0 or 1 in case of binary classification problems) when the values of independent variables are given. For example, the probability an employee will attrite (target variable) given his attributes such as his age, salary, KRA’s, etc.
+
+**Q5. What are odds?**
+
+It is the ratio of the probability of an event occurring to the probability of the event not occurring. For example, let’s assume that the probability of winning a lottery is 0.01. Then, the probability of not winning is 1 - 0.01 = 0.99.
+
+Now, as per the definition,
+
+The odds of winning the lottery = (Probability of winning)/(Probability of not winning)
+
+The odds of winning the lottery = 0.01/0.99
+
+Hence, the odds of winning the lottery is 1 to 99, and the odds of not winning the lottery is 99 to 1
+
+**Q6. Why can’t linear regression be used in place of logistic regression for binary classification?**
+
+The reasons why linear regressions cannot be used in case of binary classification are as follows:
+
+Distribution of error terms: The distribution of data in the case of linear and logistic regression is different. Linear regression assumes that error terms are normally distributed. In the case of binary classification, this assumption does not hold true.
+
+Model output: In linear regression, the output is continuous. In the case of binary classification, an output of a continuous value does not make sense. For binary classification problems, linear regression may predict values that can go beyond 0 and 1. If we want the output in the form of probabilities, which can be mapped to two different classes, then its range should be restricted to 0 and 1. As the logistic regression model can output probabilities with logistic/sigmoid function, it is preferred over linear regression.
+
+Variance of Residual errors: Linear regression assumes that the variance of random errors is constant. This assumption is also violated in the case of logistic regression
+
+**Q7. What is the likelihood function?**
+
+![title](image/likelihood-question.JPG)
+
+**Q8. What are the outputs of the logistic model and the logistic function?**
+
+![title](image/question-8.JPG)
+
+**Q9. How to interpret the results of a logistic regression model? Or, what are the meanings of the different betas in a logistic regression model?**
+![title](image/question-9.JPG)
+
+**Q10.  What is odds ratio?**
+
+![title](image/question-10.JPG)
+
+**Q11. What is the formula for calculating odds ratio?**
+
+![title](image/question-11.JPG)
+
+## Subjective Questions - II
+The following questions are related to the maximum likelihood estimator that are asked frequently in interviews.
+
+**Q1. What is the Maximum Likelihood Estimator (MLE)?**
+The MLE chooses those sets of unknown parameters (estimator) that maximise the likelihood function. The method to find the MLE is to use calculus and setting the derivative of the logistic function with respect to an unknown parameter to zero, and solving it will give the MLE. For a binomial model, this will be easy, but for a logistic model, the calculations are complex. Computer programs are used for deriving MLE for logistic models.
+
+(Here’s another approach to answering the question.)
+
+MLE is a statistical approach to estimate the parameters of a mathematical model. MLE and ordinary square estimation give the same results for linear regression if the dependent variable is assumed to be normally distributed. MLE does not assume anything about independent variables.
+
+**Q2. What are the different methods of MLE and when is each method preferred?**
+In the case of logistic regression, there are two approaches to MLE. They are conditional and unconditional methods. Conditional and unconditional methods are algorithms that use different likelihood functions. The unconditional formula employs the joint probability of positives (for example, churn) and negatives (for example, non-churn). The conditional formula is the ratio of the probability of observed data to the probability of all possible configurations.
+
+The unconditional method is preferred if the number of parameters is lower compared to the number of instances. If the number of parameters is high compared to the number of instances, then conditional MLE is to be preferred. Statisticians suggest that conditional MLE is to be used when in doubt. Conditional MLE will always provide unbiased results.
+
+**Q3. What are the advantages and disadvantages of conditional and unconditional methods of MLE?**
+Conditional methods do not estimate unwanted parameters. Unconditional methods estimate the values of unwanted parameters also. Unconditional formulas can directly be developed with joint probabilities. This cannot be done with conditional probability. If the number of parameters is high relative to the number of instances, then the unconditional method will give biased results. Conditional results will be unbiased in such cases.
+
+**Q4. What is the output of a standard MLE program?**
+The output of a standard MLE program is as follows:
+
+**Maximised likelihood value:** This is the numerical value obtained by replacing the unknown parameter values in the likelihood function with the MLE parameter estimator.
+
+**Estimated variance-covariance matrix:** The diagonal of this matrix consists of the estimated variances of the ML estimates. The off-diagonal consists of the covariances of the pairs of the ML estimates
+
+**Q5. Why can’t we use Mean Square Error (MSE) as a cost function for logistic regression?**
+In logistic regression, we use the sigmoid function and perform a non-linear transformation to obtain the probabilities. Squaring this non-linear transformation will lead to non-convexity with local minimums. Finding the global minimum in such cases using gradient descent is not possible. Due to this reason, MSE is not suitable for logistic regression. Cross-entropy or log loss is used as a cost function for logistic regression. In the cost function for logistic regression, the confident wrong predictions are penalised heavily. The confident right predictions are rewarded less. By optimising this cost function, convergence is achieved.
+
+## Subjective Questions - III
