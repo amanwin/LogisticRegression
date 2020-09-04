@@ -110,7 +110,7 @@ So, now, instead of probability, you have odds and log odds. Clearly, the relati
 
 ![title](image/odds-probablity.JPG)
 
-![title](image/rel-odds-probablity)
+![title](image/rel-odds-probablity.JPG)
 
 ![title](image/plot-odds-probablity.JPG)
 
@@ -492,7 +492,7 @@ Notice that in the last line you're giving the actual Churn values and the respe
 ### Interpreting the ROC Curve
 Following is the ROC curve that you got. Note that it is the same curve you got in Excel as well but that was using scatter plot to represent the discrete points and here we are using a continuous line.
 
-![title](image/ROC+curve)
+![title](image/ROC+curve.png)
 
 #### The 45 degree Diagonal
 For a completely random model, the ROC curve will pass through the 45-degree line that has been shown in the graph above and in the best case it passes through the upper left corner of the graph. So the least area that an ROC curve can have is 0.5, and the highest area it can have is 1.
